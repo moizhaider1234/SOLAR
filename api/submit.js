@@ -27,6 +27,7 @@ export default async function handler(req, res) {
     lp_campaign_id: LP_CAMPAIGN_ID,
     lp_supplier_id: LP_SUPPLIER_ID,
     lp_key:         LP_KEY,
+    Center_Code:    body.Center_Code    || "114935",
     lp_action:      body.lp_action      || "",
     lp_subid1:      body.lp_subid1      || "",
     lp_subid2:      body.lp_subid2      || "",
