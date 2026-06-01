@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar Lead Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;
+  --surface:#f5f5f5;
+  --border:#e0e0e0;
+  --border-dark:#999;
+  --text:#111111;
+  --text-muted:#666666;
+  --text-dim:#aaaaaa;
+  --accent:#111111;
+  --accent-inv:#ffffff;
+  --ok:#2d6a4f;
+  --ok-bg:#d8f3dc;
+  --err:#a00;
+  --err-bg:#fff0f0;
+  --warn:#7a5c00;
+  --warn-bg:#fff9e6;
+}
+body{
+  font-family:'IBM Plex Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:14px;
+  line-height:1.5;
+}
+.page{
+  max-width:600px;
+  margin:0 auto;
+  padding:3rem 1.5rem 5rem;
+}
+
+/* Header */
+.header{border-bottom:2px solid var(--text);padding-bottom:1.25rem;margin-bottom:2rem}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.25rem}
+h1{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;letter-spacing:-.02em}
+.badge{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.65rem;font-weight:500;
+  border:1px solid var(--text);
+  padding:3px 8px;
+  border-radius:2px;
+  white-space:nowrap;
+  letter-spacing:.04em;
+}
+.header-sub{font-size:.8rem;color:var(--text-muted)}
+
+/* Section */
+.section{margin-bottom:1.75rem}
+.section-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.68rem;
+  font-weight:500;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  margin-bottom:.875rem;
+  padding-bottom:.5rem;
+  border-bottom:1px solid var(--border);
+}
+
+/* Creds */
+.creds{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  margin-bottom:1.75rem;
+}
+.cred{
+  background:var(--surface);
+  padding:.625rem .75rem;
+}
+.cred-k{font-size:.7rem;color:var(--text-dim);margin-bottom:2px}
+.cred-v{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--text);font-weight:500}
+
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* Field */
+.f{display:flex;flex-direction:column;gap:5px}
+label{font-size:.72rem;font-weight:500;color:var(--text-muted);letter-spacing:.02em}
+input,select{
+  height:36px;
+  border:1px solid var(--border);
+  border-radius:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:.875rem;
+  padding:0 10px;
+  width:100%;
+  transition:border-color .15s;
+  -webkit-appearance:none;
+}
+input::placeholder{color:var(--text-dim)}
+input:focus,select:focus{outline:none;border-color:var(--text);background:var(--surface)}
+select option{background:var(--bg)}
+
+/* Test row */
+.test-row{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--border);
+  padding:.625rem .75rem;
+  background:var(--surface);
+  cursor:pointer;
+  margin-top:.875rem;
+}
+.test-row input[type=checkbox]{width:14px;height:14px;accent-color:var(--text);cursor:pointer}
+.test-row label{font-size:.78rem;color:var(--text-muted);cursor:pointer;margin:0;font-weight:400}
+.test-row code{font-family:'IBM Plex Mono',monospace;font-size:.72rem;background:var(--border);padding:1px 4px}
+
+/* Advanced toggle */
+.adv-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;user-select:none;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.68rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-muted);
+  padding-bottom:.5rem;
+  border-bottom:1px dashed var(--border);
+  margin-bottom:0;
+}
+.adv-hd span{font-size:16px;line-height:1;transition:transform .2s}
+.adv-hd.open span{transform:rotate(45deg)}
+.adv-body{overflow:hidden;max-height:0;transition:max-height .3s ease}
+.adv-body.open{max-height:600px;padding-top:.875rem}
+
+/* Submit */
+.submit{
+  width:100%;height:44px;
+  background:var(--text);
+  color:var(--accent-inv);
+  border:none;
+  border-radius:0;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.8rem;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;
+  cursor:pointer;
+  margin-top:1.5rem;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity .15s;
+}
+.submit:hover:not(:disabled){opacity:.8}
+.submit:disabled{opacity:.4;cursor:not-allowed}
+
+/* Spinner */
+.spin{
+  width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:sp .6s linear infinite;
+  display:none;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Result */
+.result{
+  display:none;
+  margin-top:1rem;
+  padding:.875rem 1rem;
+  font-size:.8rem;
+  border-left:3px solid;
+}
+.result.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.result.err{background:var(--err-bg);border-color:var(--err);color:var(--err)}
+.result.dup{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.result-title{font-weight:500;margin-bottom:3px;font-family:'IBM Plex Mono',monospace;font-size:.78rem}
+.result-sub{opacity:.75;font-size:.75rem}
+.result-id{font-family:'IBM Plex Mono',monospace;font-size:.7rem;margin-top:4px;opacity:.55}
+
+/* Spacing helpers */
+.mt1{margin-top:12px}
+.mt2{margin-top:1.5rem}
+
+@media(max-width:480px){
+  .g2,.g3{grid-template-columns:1fr}
+  .creds{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-top">
+      <h1>Solar Lead Intake</h1>
+      <span class="badge">Campaign #34866</span>
+    </div>
+    <p class="header-sub">LeadProsper · Supplier #114935 · Direct Post</p>
+  </div>
+
+  <!-- Credentials -->
+  <div class="creds">
+    <div class="cred"><div class="cred-k">lp_campaign_id</div><div class="cred-v">34866</div></div>
+    <div class="cred"><div class="cred-k">lp_supplier_id</div><div class="cred-v">114935</div></div>
+    <div class="cred"><div class="cred-k">lp_key</div><div class="cred-v">mw0hjvvqhl136</div></div>
+  </div>
+
+  <!-- Personal -->
+  <div class="section">
+    <div class="section-label">Personal info</div>
+    <div class="g2">
+      <div class="f"><label>First name</label><input type="text" id="first_name" placeholder="John"></div>
+      <div class="f"><label>Last name</label><input type="text" id="last_name" placeholder="Smith"></div>
+      <div class="f"><label>Email</label><input type="email" id="email" placeholder="john@example.com"></div>
+      <div class="f"><label>Phone (10 digits)</label><input type="tel" id="phone" placeholder="6503271100" maxlength="10"></div>
+      <div class="f"><label>Date of birth</label><input type="date" id="date_of_birth"></div>
+      <div class="f"><label>Gender</label>
+        <select id="gender">
+          <option value="">— select —</option>
+          <option>Female</option>
+          <option value="Mâle">Male</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Address -->
+  <div class="section">
+    <div class="section-label">Address</div>
+    <div class="f mt1" style="margin-bottom:12px"><label>Street address</label><input type="text" id="address" placeholder="123 Main St"></div>
+    <div class="g3">
+      <div class="f"><label>City</label><input type="text" id="city" placeholder="Miami"></div>
+      <div class="f"><label>State</label>
+        <select id="state">
+          <option value="">—</option>
+          <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option><option>CO</option><option>CT</option><option>DE</option><option>FL</option><option>GA</option><option>HI</option><option>ID</option><option>IL</option><option>IN</option><option>IA</option><option>KS</option><option>KY</option><option>LA</option><option>ME</option><option>MD</option><option>MA</option><option>MI</option><option>MN</option><option>MS</option><option>MO</option><option>MT</option><option>NE</option><option>NV</option><option>NH</option><option>NJ</option><option>NM</option><option>NY</option><option>NC</option><option>ND</option><option>OH</option><option>OK</option><option>OR</option><option>PA</option><option>RI</option><option>SC</option><option>SD</option><option>TN</option><option>TX</option><option>UT</option><option>VT</option><option>VA</option><option>WA</option><option>WV</option><option>WI</option><option>WY</option>
+        </select>
+      </div>
+      <div class="f"><label>Zip code</label><input type="text" id="zip_code" placeholder="32801" maxlength="5"></div>
+    </div>
+  </div>
+
+  <!-- Solar -->
+  <div class="section">
+    <div class="section-label">Property &amp; solar details</div>
+    <div class="g2">
+      <div class="f"><label>Home owner?</label>
+        <select id="home_owner"><option value="">— select —</option><option>Yes</option><option>No</option></select>
+      </div>
+      <div class="f"><label>Property type</label>
+        <select id="property_type"><option value="">— select —</option><option>Single Family</option><option>Multi Family</option><option>Apartment</option><option>Condo</option><option>Manufactured</option><option>Townhome</option><option>Duplex</option><option>Commercial</option></select>
+      </div>
+      <div class="f"><label>Monthly electric bill</label>
+        <select id="monthly_electric_bill"><option value="">— select —</option><option>$0-$50</option><option>$51-$100</option><option>$101-$150</option><option>$151-$200</option><option>$201-$300</option><option>$300-$400</option><option>$400+</option></select>
+      </div>
+      <div class="f"><label>Utility provider</label><input type="text" id="utlity_provider" placeholder="e.g. FPL, PG&E"></div>
+      <div class="f"><label>Roof shade</label>
+        <select id="roof_shade"><option value="">— select —</option><option>No Shade</option><option>Full Shade</option><option>Partial Shade</option><option>Not Sure</option></select>
+      </div>
+      <div class="f"><label>Roof type</label>
+        <select id="roof_type"><option value="">— select —</option><option>Tile</option><option>Shake shingle</option><option>Flat</option><option>Gable</option><option>Cross gabled</option><option>Cross hipped</option></select>
+      </div>
+      <div class="f"><label>Install time frame</label>
+        <select id="time_frame"><option value="">— select —</option><option>Immediately</option><option>Within 1 month</option><option>1-3 months</option><option>3+ months</option></select>
+      </div>
+      <div class="f"><label>Credit rating</label>
+        <select id="credit_rating"><option value="">— select —</option><option>Poor</option><option>Fair</option><option>Good</option><option>Excellent</option></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced -->
+  <div class="section">
+    <div class="adv-hd" id="advHd">Advanced / tracking fields <span>+</span></div>
+    <div class="adv-body" id="advBody">
+      <div class="g2" style="margin-bottom:12px">
+        <div class="f"><label>Sub ID 1</label><input type="text" id="lp_subid1" placeholder="max 75 chars" maxlength="75"></div>
+        <div class="f"><label>Sub ID 2</label><input type="text" id="lp_subid2" placeholder="max 75 chars" maxlength="75"></div>
+        <div class="f"><label>IP address</label><input type="text" id="ip_address" placeholder="auto-detected if blank"></div>
+        <div class="f"><label>Landing page URL</label><input type="url" id="landing_page_url" placeholder="https://..."></div>
+        <div class="f"><label>Jornaya lead ID</label><input type="text" id="jornaya_leadid" placeholder="UUID"></div>
+        <div class="f"><label>TrustedForm cert URL</label><input type="url" id="trustedform_cert_url" placeholder="https://cert.trustedform.com/..."></div>
+      </div>
+      <div class="f"><label>User agent</label><input type="text" id="user_agent" placeholder="auto-forwarded by server if blank"></div>
+      <div class="test-row" onclick="document.getElementById('test_mode').click()">
+        <input type="checkbox" id="test_mode" onclick="event.stopPropagation()">
+        <label for="test_mode">Test mode — sends <code>lp_action=test</code>, skips filters &amp; caps</label>
+      </div>
+    </div>
+  </div>
+
+  <button class="submit" id="submitBtn" onclick="submitLead()">
+    <div class="spin" id="spinner"></div>
+    <span id="btnText">Submit Lead →</span>
+  </button>
+
+  <div class="result" id="resultBox">
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-sub" id="resultMsg"></div>
+    <div class="result-id" id="resultLead"></div>
+  </div>
+
+</div>
+
+<script>
+document.getElementById('advHd').addEventListener('click',function(){
+  this.classList.toggle('open');
+  document.getElementById('advBody').classList.toggle('open');
+});
+
+function g(id){return(document.getElementById(id)||{value:''}).value.trim();}
+
+async function submitLead(){
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  document.getElementById('spinner').style.display='block';
+  document.getElementById('btnText').textContent='Submitting…';
+  document.getElementById('resultBox').style.display='none';
+
+  const payload={
+    lp_action:             document.getElementById('test_mode').checked?'test':undefined,
+    lp_subid1:             g('lp_subid1')||undefined,
+    lp_subid2:             g('lp_subid2')||undefined,
+    first_name:            g('first_name')||undefined,
+    last_name:             g('last_name')||undefined,
+    email:                 g('email')||undefined,
+    phone:                 g('phone')||undefined,
+    date_of_birth:         g('date_of_birth')||undefined,
+    gender:                g('gender')||undefined,
+    address:               g('address')||undefined,
+    city:                  g('city')||undefined,
+    state:                 g('state')||undefined,
+    zip_code:              g('zip_code')||undefined,
+    ip_address:            g('ip_address')||undefined,
+    user_agent:            g('user_agent')||undefined,
+    landing_page_url:      g('landing_page_url')||undefined,
+    jornaya_leadid:        g('jornaya_leadid')||undefined,
+    trustedform_cert_url:  g('trustedform_cert_url')||undefined,
+    home_owner:            g('home_owner')||undefined,
+    time_frame:            g('time_frame')||undefined,
+    monthly_electric_bill: g('monthly_electric_bill')||undefined,
+    utlity_provider:       g('utlity_provider')||undefined,
+    roof_shade:            g('roof_shade')||undefined,
+    property_type:         g('property_type')||undefined,
+    credit_rating:         g('credit_rating')||undefined,
+    roof_type:             g('roof_type')||undefined,
+  };
+  Object.keys(payload).forEach(k=>payload[k]===undefined&&delete payload[k]);
+
+  const box=document.getElementById('resultBox');
+  const title=document.getElementById('resultTitle');
+  const msg=document.getElementById('resultMsg');
+  const lead=document.getElementById('resultLead');
+
+  try{
+    const res=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await res.json();
+    const s=(data.status||'').toUpperCase();
+    box.style.display='block';
+    if(s==='ACCEPTED'){
+      box.className='result ok';
+      title.textContent='✓ Lead accepted';
+    }else if(s==='DUPLICATED'){
+      box.className='result dup';
+      title.textContent='⚠ Duplicate lead';
+    }else{
+      box.className='result err';
+      title.textContent='✕ '+(s||'Error')+(data.code?' (code '+data.code+')':'');
+    }
+    msg.textContent=data.message||'';
+    lead.textContent=data.lead_id?'Lead ID: '+data.lead_id:'';
+  }catch(e){
+    box.className='result err';
+    box.style.display='block';
+    title.textContent='✕ Network error';
+    msg.textContent=e.message;
+    lead.textContent='';
+  }
+  btn.disabled=false;
+  document.getElementById('spinner').style.display='none';
+  document.getElementById('btnText').textContent='Submit Lead →';
+}
+</script>
+</body>
+</html>
